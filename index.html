@@ -576,6 +576,7 @@ input[type=color] {
 
     <div class="btn-row">
       <button class="btn btn-primary" style="flex:1" onclick="saveProfile()">Speichern</button>
+      <button class="btn btn-secondary" onclick="shareProfile(editingProfileId)" title="Nativ teilen">Teilen</button>
       <button class="btn btn-secondary" onclick="exportCurrentProfile()" title="Als Datei">↑ Datei</button>
       <button class="btn btn-danger" onclick="deleteProfile()">Löschen</button>
     </div>
@@ -645,13 +646,6 @@ input[type=color] {
           <div class="sheet-option-sub">Gespeicherte Profildatei öffnen</div>
         </div>
       </button>
-      <button class="sheet-option" onclick="closeNewProfileSheet();openQrScanner()">
-        <div class="sheet-option-icon">▦</div>
-        <div>
-          <div class="sheet-option-title">QR-Code scannen</div>
-          <div class="sheet-option-sub">Profil von einem anderen Gerät übernehmen</div>
-        </div>
-      </button>
     </div>
   </div>
 </div>
@@ -672,48 +666,6 @@ input[type=color] {
     <button class="btn btn-secondary btn-full" style="margin-top:16px;flex-shrink:0" onclick="closeOnlineSheet()">Schließen</button>
   </div>
 </div>
-
-<!-- QR SHARE MODAL -->
-<div id="qr-share-modal" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.88);flex-direction:column;align-items:center;justify-content:center">
-  <div style="width:100%;max-width:360px;padding:20px">
-    <div class="card" style="text-align:center;margin-bottom:0">
-      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px" id="qr-share-name">Profil teilen</div>
-      <div style="font-size:11px;color:var(--text-dim);margin-bottom:14px">Anderen Piloten diesen Code scannen lassen</div>
-      <div style="display:flex;justify-content:center;margin-bottom:14px">
-        <canvas id="qr-canvas" style="border-radius:8px;image-rendering:pixelated;background:#fff;padding:8px"></canvas>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-secondary" style="flex:1" onclick="exportSharedProfile()">↑ Als Datei</button>
-        <button class="btn btn-secondary" style="flex:1" onclick="closeQrShare()">Schließen</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div id="qr-modal" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.92);flex-direction:column;align-items:center;justify-content:center">
-  <div style="width:100%;max-width:400px;padding:20px">
-    <div style="font-size:16px;font-weight:700;color:var(--text);text-align:center;margin-bottom:16px">QR-Code scannen</div>
-    <div style="position:relative;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:1">
-      <video id="qr-video" style="width:100%;height:100%;object-fit:cover" playsinline autoplay muted></video>
-      <canvas id="qr-scan-canvas" style="display:none"></canvas>
-      <!-- scan frame overlay -->
-      <div style="position:absolute;inset:0;pointer-events:none">
-        <div style="position:absolute;top:15%;left:15%;right:15%;bottom:15%;border:2px solid var(--accent);border-radius:8px;box-shadow:0 0 0 1000px rgba(0,0,0,0.4)"></div>
-        <div id="qr-scan-line" style="position:absolute;top:15%;left:15%;right:15%;height:2px;background:var(--accent);opacity:0.8;box-shadow:0 0 8px var(--accent)"></div>
-      </div>
-    </div>
-    <div id="qr-scan-status" style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px">Kamera wird gestartet…</div>
-    <button class="btn btn-secondary btn-full" style="margin-top:16px" onclick="closeQrScanner()">Abbrechen</button>
-  </div>
-</div>
-
-<style>
-#qr-scan-line { animation: scanline 2s ease-in-out infinite; }
-@keyframes scanline {
-  0%   { top: 15%; }
-  50%  { top: calc(85% - 2px); }
-  100% { top: 15%; }
-}
-</style>
 
 <div id="toast"></div>
 <input type="file" id="file-import" accept=".json" style="display:none" onchange="handleImport(event)">
@@ -775,7 +727,7 @@ function renderHome() {
       <div class="tile-top">
         <div class="tile-icon">⊿</div>
         <div style="display:flex;gap:5px">
-          <button class="tile-edit" onclick="event.stopPropagation();openQrShare('${p.id}')" title="Teilen">▦</button>
+          <button class="tile-edit" onclick="event.stopPropagation();shareProfile('${p.id}')" title="Teilen">⇪</button>
           <button class="tile-edit" onclick="event.stopPropagation();goEditProfile('${p.id}',false)" title="Bearbeiten">✎</button>
         </div>
       </div>
@@ -1093,17 +1045,7 @@ function updateMoment(momentId, field, value) {
 
 // ════ IMPORT / EXPORT ════
 function exportCurrentProfile() {
-  const p = getProfile(editingProfileId);
-  if (!p) return;
-  const blob = new Blob([JSON.stringify(p, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  const namePart = p.name.replace(/[^\w\däöüÄÖÜß]+/g,'_').replace(/^_|_$/g,'');
-  const regPart = p.reg ? '_' + p.reg.replace(/[^\w]+/g,'') : '';
-  a.download = (namePart + regPart || 'profil') + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
+  exportProfileById(editingProfileId);
 }
 
 function importProfile() { document.getElementById('file-import').click(); }
@@ -1307,271 +1249,77 @@ function init() {
 
 init();
 
-// ════ QR CODE GENERATION — qrcode-generator library (auto-version, up to ~2953 bytes) ════
-let _qrLibLoaded = false;
-let _qrLibLoading = false;
-
-function loadQrLib(cb) {
-  if (_qrLibLoaded) { cb(); return; }
-  if (_qrLibLoading) { setTimeout(() => loadQrLib(cb), 100); return; }
-  _qrLibLoading = true;
-  const s = document.createElement('script');
-  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-  s.onload = () => { _qrLibLoaded = true; cb(); };
-  s.onerror = () => { _qrLibLoading = false; cb(new Error('QR-Bibliothek konnte nicht geladen werden')); };
-  document.head.appendChild(s);
-}
-
-const QR = {
-  render(canvas, text, opts={}, cb) {
-    loadQrLib((err) => {
-      if (err) { if (cb) cb(false); return; }
-      try {
-        // Clear canvas first
-        const ctx = canvas.getContext('2d');
-        const maxPx = opts.maxPx || 300;
-        // Use QRCode library to draw into a temp div, then copy to canvas
-        const tmp = document.createElement('div');
-        tmp.style.cssText = 'position:absolute;left:-9999px;top:-9999px';
-        document.body.appendChild(tmp);
-        const qr = new QRCode(tmp, {
-          text,
-          width: maxPx,
-          height: maxPx,
-          colorDark: '#000000',
-          colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M
-        });
-        // QRCode renders into an img or canvas inside tmp
-        setTimeout(() => {
-          const img = tmp.querySelector('img') || tmp.querySelector('canvas');
-          if (!img) { document.body.removeChild(tmp); if (cb) cb(false); return; }
-          canvas.width = maxPx;
-          canvas.height = maxPx;
-          const ctx2 = canvas.getContext('2d');
-          if (img.tagName === 'IMG') {
-            const i = new Image();
-            i.onload = () => {
-              ctx2.drawImage(i, 0, 0, maxPx, maxPx);
-              document.body.removeChild(tmp);
-              if (cb) cb(true);
-            };
-            i.src = img.src;
-          } else {
-            ctx2.drawImage(img, 0, 0, maxPx, maxPx);
-            document.body.removeChild(tmp);
-            if (cb) cb(true);
-          }
-        }, 100);
-      } catch(e) {
-        if (cb) cb(false);
-      }
-    });
-  }
-};
-
-
-// ════ QR SHARE MODAL ════
-let sharingProfileId = null;
-
-function openQrShare(profileId) {
-  sharingProfileId = profileId;
-  const p = getProfile(profileId);
-  if (!p) return;
-  document.getElementById('qr-share-name').textContent = p.name + (p.reg ? ' · ' + p.reg : '');
-  document.getElementById('qr-share-modal').style.display = 'flex';
-  showQrCode(profileId);
-}
-
-function closeQrShare() {
-  document.getElementById('qr-share-modal').style.display = 'none';
-  sharingProfileId = null;
-}
-
-function exportSharedProfile() {
-  const p = getProfile(sharingProfileId);
-  if (!p) return;
-  const blob = new Blob([JSON.stringify(p, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  const namePart = p.name.replace(/[^\w\däöüÄÖÜß]+/g,'_').replace(/^_|_$/g,'');
+// ════ SHARE ════
+function profileFilename(p) {
+  const namePart = (p.name || 'profil').replace(/[^\w\däöüÄÖÜß]+/g,'_').replace(/^_|_$/g,'');
   const regPart = p.reg ? '_' + p.reg.replace(/[^\w]+/g,'') : '';
-  a.download = (namePart + regPart || 'profil') + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
+  return (namePart + regPart || 'profil') + '.json';
 }
-// Compact profile to short keys to fit QR capacity (~216 bytes at version 10 level M)
-function compressProfile(p) {
+
+function buildProfileFile(p) {
+  const json = JSON.stringify(p, null, 2);
+  const filename = profileFilename(p);
+  const blob = new Blob([json], { type: 'application/json' });
   return {
-    n: p.name,
-    r: p.reg || '',
-    em: p.emptyMass,
-    ec: p.emptyCg,
-    wa: p.wingArea,
-    mt: p.mtom,
-    mn: p.cgMin,
-    mx: p.cgMax,
-    mo: (p.moments||[]).map(m => [m.name, m.arm, m.min, m.max, m.step, m.defaultVal||0, m.showSlider?1:0])
+    filename,
+    blob,
+    file: new File([blob], filename, { type: 'application/json' })
   };
 }
 
-function expandProfile(c) {
-  return {
-    id: genId(),
-    name: c.n || 'Importiert',
-    reg: c.r || '',
-    emptyMass: +c.em || 0,
-    emptyCg: +c.ec || 0,
-    wingArea: +c.wa || 10,
-    mtom: +c.mt || 600,
-    cgMin: +c.mn || 0,
-    cgMax: +c.mx || 500,
-    moments: (c.mo||[]).map(m => ({
-      id: genId(),
-      name: m[0], arm: +m[1], min: +m[2], max: +m[3],
-      step: +m[4], defaultVal: +m[5], showSlider: !!m[6]
-    }))
-  };
-}
-
-function showQrCode(profileId) {
+async function shareProfile(profileId) {
   const p = getProfile(profileId || editingProfileId);
   if (!p) return;
-  const json = JSON.stringify(compressProfile(p));
-  const canvas = document.getElementById('qr-canvas');
-  const maxPx = Math.min(window.innerWidth - 64, 300);
 
-  // Show loading state in canvas
-  canvas.width = maxPx; canvas.height = maxPx;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#111822';
-  ctx.fillRect(0, 0, maxPx, maxPx);
-  ctx.fillStyle = '#5a7a9a';
-  ctx.font = '13px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('Wird generiert…', maxPx/2, maxPx/2);
+  try {
+    const payload = buildProfileFile(p);
 
-  QR.render(canvas, json, { maxPx }, (ok) => {
-    if (!ok) {
-      closeQrShare();
-      toast('QR-Code konnte nicht generiert werden');
-    }
-  });
-}
-
-// ════ QR SCANNER ════
-let scanStream = null;
-let scanInterval = null;
-
-function openQrScanner() {
-  const modal = document.getElementById('qr-modal');
-  modal.style.display = 'flex';
-  document.getElementById('qr-scan-status').textContent = 'Kamera wird gestartet…';
-
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    document.getElementById('qr-scan-status').textContent = 'Kamera nicht verfügbar';
-    return;
-  }
-
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-    .then(stream => {
-      scanStream = stream;
-      const video = document.getElementById('qr-video');
-      video.srcObject = stream;
-      video.play();
-      document.getElementById('qr-scan-status').textContent = 'QR-Code in den Rahmen halten…';
-      startScanLoop(video);
-    })
-    .catch(err => {
-      document.getElementById('qr-scan-status').textContent = 'Kamera-Zugriff verweigert';
-    });
-}
-
-function startScanLoop(video) {
-  const canvas = document.getElementById('qr-scan-canvas');
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-  // Use jsQR if available, else try BarcodeDetector API
-  const tryDecode = () => {
-    if (video.readyState < 2) return;
-    canvas.width  = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0);
-
-    // Try BarcodeDetector (Chrome/Android)
-    if ('BarcodeDetector' in window) {
-      new BarcodeDetector({ formats: ['qr_code'] })
-        .detect(canvas)
-        .then(codes => {
-          if (codes.length > 0) handleScannedQr(codes[0].rawValue);
-        }).catch(()=>{});
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [payload.file] })) {
+      await navigator.share({
+        files: [payload.file],
+        title: p.name || 'Profil',
+        text: p.reg ? `${p.name} · ${p.reg}` : (p.name || 'Profil')
+      });
       return;
     }
 
-    // Try jsQR (loaded dynamically)
-    if (window.jsQR) {
-      const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(img.data, img.width, img.height);
-      if (code) handleScannedQr(code.data);
-    }
-  };
-
-  scanInterval = setInterval(tryDecode, 250);
-
-  // Lazy-load jsQR as fallback
-  if (!window.jsQR && !('BarcodeDetector' in window)) {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js';
-    document.head.appendChild(s);
-  }
-}
-
-function handleScannedQr(text) {
-  clearInterval(scanInterval);
-  scanInterval = null;
-  try {
-    const data = JSON.parse(text);
-    const items = Array.isArray(data) ? data : [data];
-    let count = 0;
-    for (const item of items) {
-      let p;
-      if (item.n !== undefined && item.em !== undefined) {
-        // Compressed format
-        p = expandProfile(item);
-      } else if (item.name) {
-        // Full format
-        p = item;
-        p.id = genId();
-        if (!p.moments) p.moments = [];
-      } else {
-        throw new Error('Ungültiges Format');
+    if (navigator.share) {
+      const url = URL.createObjectURL(payload.blob);
+      try {
+        await navigator.share({
+          title: p.name || 'Profil',
+          text: p.reg ? `${p.name} · ${p.reg}` : (p.name || 'Profil'),
+          url
+        });
+        return;
+      } catch (err) {
+        // Blob URLs are often rejected by native share targets; fall through to file export.
+      } finally {
+        URL.revokeObjectURL(url);
       }
-      profiles.push(p);
-      count++;
     }
-    saveStorage();
-    closeQrScanner();
-    renderHome();
-    toast(count + ' Profil(e) importiert');
-  } catch(err) {
-    document.getElementById('qr-scan-status').textContent = 'Ungültiger QR-Code – nochmal versuchen';
-    setTimeout(() => {
-      const video = document.getElementById('qr-video');
-      if (video && scanStream) startScanLoop(video);
-    }, 1500);
+
+    exportProfileById(p.id);
+    toast('Teilen nicht verfügbar – Datei wurde exportiert');
+  } catch (err) {
+    if (err && err.name === 'AbortError') return;
+    console.error('Share failed:', err);
+    exportProfileById(p.id);
+    toast('Teilen fehlgeschlagen – Datei wurde exportiert');
   }
 }
 
-function closeQrScanner() {
-  clearInterval(scanInterval);
-  scanInterval = null;
-  if (scanStream) { scanStream.getTracks().forEach(t => t.stop()); scanStream = null; }
-  const video = document.getElementById('qr-video');
-  if (video) { video.srcObject = null; }
-  document.getElementById('qr-modal').style.display = 'none';
+function exportProfileById(profileId) {
+  const p = getProfile(profileId);
+  if (!p) return;
+  const payload = buildProfileFile(p);
+  const url = URL.createObjectURL(payload.blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = payload.filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
-
 </script>
 </body>
 </html>
