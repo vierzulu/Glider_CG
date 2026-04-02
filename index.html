@@ -746,7 +746,7 @@ function saveStorage() {
 }
 
 function loadStorage() {
-  try { profiles = JSON.parse(localStorage.getItem('cgcalc_profiles') || '[]'); } catch { profiles = []; }
+  try { profiles = JSON.parse(localStorage.getItem('cgcalc_profiles') || '[]'); profiles.forEach(sanitizeProfile); } catch { profiles = []; }
   currentProfileId = localStorage.getItem('cgcalc_current') || null;
   try { sliderValues = JSON.parse(localStorage.getItem('cgcalc_sliders') || '{}'); } catch { sliderValues = {}; }
 }
@@ -1201,8 +1201,7 @@ function handleImport(e) {
       const items = Array.isArray(data) ? data : [data];
       for (const p of items) {
         if (!p.name) throw new Error('Ungültiges Format');
-        p.id = genId();
-        if (!p.moments) p.moments = [];
+        sanitizeProfile(p);
         profiles.push(p);
       }
       saveStorage();
@@ -1255,6 +1254,13 @@ function loadDesign() {
 
 // ════ HELPERS ════
 function getProfile(id) { return profiles.find(p => p.id === id); }
+
+function sanitizeProfile(p) {
+  p.id = p.id || genId();
+  if (!p.moments) p.moments = [];
+  p.moments.forEach(m => { if (!m.id) m.id = genId(); });
+  return p;
+}
 
 function getMomentVal(profileId, moment) {
   const key = profileId + '_' + moment.id;
@@ -1364,8 +1370,7 @@ function downloadOnlineProfile(file, name) {
       const items = Array.isArray(data) ? data : [data];
       for (const p of items) {
         if (!p.name) throw new Error('Ungültiges Format');
-        p.id = genId();
-        if (!p.moments) p.moments = [];
+        sanitizeProfile(p);
         profiles.push(p);
       }
       saveStorage();
