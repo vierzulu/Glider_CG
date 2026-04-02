@@ -40,7 +40,7 @@ html, body {
 }
 
 /* SCREEN SYSTEM */
-.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen { display: none; height: 100vh; height: 100dvh; flex-direction: column; overflow: hidden; }
 .screen.active { display: flex; }
 
 /* TOPBAR */
@@ -295,6 +295,23 @@ html, body {
   border-radius: 3px;
 }
 
+.cg-bar-opt {
+  position:absolute; top:1px; bottom:1px;
+  background: rgba(0,232,122,0.35);
+  border: 1px solid rgba(0,232,122,0.8);
+  border-radius: 2px;
+  pointer-events:none;
+}
+
+.cg-bar-needle-dump {
+  position:absolute; top:-4px; bottom:-4px; width:3px;
+  background: var(--warn); border-radius:2px;
+  transform: translateX(-50%);
+  transition: left 0.4s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 8px var(--warn);
+  opacity: 0.85;
+}
+
 .cg-bar-needle {
   position:absolute; top:-4px; bottom:-4px; width:3px;
   background: var(--accent); border-radius:2px;
@@ -510,7 +527,7 @@ input[type=color] {
       <div class="result-cell">
         <div class="result-label">Gesamtmasse</div>
         <div class="result-value" id="res-mass">—</div>
-        <div class="result-unit">kg</div>
+        <div class="result-unit" id="res-mass-unit">kg</div>
       </div>
       <div class="result-cell">
         <div class="status-dot" id="status-dot"></div>
@@ -524,10 +541,33 @@ input[type=color] {
         <div class="result-unit">kg/m²</div>
       </div>
     </div>
+    <!-- Second row: after dump -->
+    <div id="dump-row" style="display:none;border-top:1px solid var(--border)">
+      <div class="result-bar-inner">
+        <div class="result-cell" style="padding:6px 4px 5px">
+          <div class="result-label" style="font-size:8px">Konfiguration 2</div>
+          <div class="result-value" id="dump-mass" style="font-size:15px">—</div>
+          <div class="result-unit">kg</div>
+        </div>
+        <div class="result-cell" style="padding:6px 4px 5px">
+          <div class="status-dot" id="dump-dot" style="top:5px;right:5px"></div>
+          <div class="result-label" style="font-size:8px">SP Konfig. 2</div>
+          <div class="result-value" id="dump-cg" style="font-size:15px">—</div>
+          <div class="result-unit">mm</div>
+        </div>
+        <div class="result-cell" style="padding:6px 4px 5px">
+          <div class="result-label" style="font-size:8px">Flächenbelastung</div>
+          <div class="result-value" id="dump-wl" style="font-size:15px">—</div>
+          <div class="result-unit">kg/m²</div>
+        </div>
+      </div>
+    </div>
     <div id="cg-bar-wrap">
       <div class="cg-bar-track">
         <div class="cg-bar-green" id="cg-green"></div>
+        <div class="cg-bar-opt" id="cg-opt" style="display:none"></div>
         <div class="cg-bar-needle" id="cg-needle"></div>
+        <div class="cg-bar-needle-dump" id="cg-needle-dump" style="display:none"></div>
       </div>
       <div class="cg-bar-labels" id="cg-labels"></div>
       <div class="cg-status" id="cg-status">—</div>
@@ -565,6 +605,10 @@ input[type=color] {
       <div class="grid-2">
         <div><label>SP-Limit vorne (mm)</label><input type="number" id="ed-cg-min" step="1"></div>
         <div><label>SP-Limit hinten (mm)</label><input type="number" id="ed-cg-max" step="1"></div>
+      </div>
+      <div class="grid-2">
+        <div><label>SP-Optimum vorne (mm)</label><input type="number" id="ed-cg-opt-min" step="1" placeholder="optional"></div>
+        <div><label>SP-Optimum hinten (mm)</label><input type="number" id="ed-cg-opt-max" step="1" placeholder="optional"></div>
       </div>
     </div>
 
@@ -834,55 +878,124 @@ function setFixed(profileId, momentId, val) {
 }
 
 // ════ CALCULATE ════
-function calculate() {
-  const p = getProfile(currentProfileId);
-  if (!p) return;
-
+function calcMassAndCg(p, excludeDumpable) {
   let mass = p.emptyMass;
   let moment = p.emptyMass * p.emptyCg;
   (p.moments||[]).forEach(m => {
+    if (excludeDumpable && m.inConfig2 === false) return;
     const v = getMomentVal(p.id, m);
     mass += v;
     moment += v * m.arm;
   });
-
   const cg = mass > 0 ? moment / mass : 0;
   const wl = p.wingArea > 0 ? mass / p.wingArea : 0;
+  return { mass, cg, wl };
+}
 
-  document.getElementById('res-mass').textContent = mass.toFixed(1);
-  document.getElementById('res-cg').textContent   = cg.toFixed(0);
-  document.getElementById('res-wl').textContent   = wl.toFixed(1);
+function cgColor(cg, p) {
+  if (cg < p.cgMin || cg > p.cgMax) return 'var(--danger)';
+  if (p.cgOptMin != null && p.cgOptMax != null && cg >= p.cgOptMin && cg <= p.cgOptMax) return 'var(--ok)';
+  return 'var(--warn)';
+}
 
+function calculate() {
+  const p = getProfile(currentProfileId);
+  if (!p) return;
+
+  const main = calcMassAndCg(p, false);
+  const { mass, cg, wl } = main;
+
+  // ── Mass warning ──
+  const massEl   = document.getElementById('res-mass');
+  const massUnit = document.getElementById('res-mass-unit');
+  const overMtom = p.mtom > 0 && mass > p.mtom;
+  massEl.textContent = mass.toFixed(1);
+  massEl.style.color = overMtom ? 'var(--danger)' : 'var(--accent)';
+  massUnit.textContent = overMtom ? 'kg ▲ MAX' : 'kg';
+  massUnit.style.color = overMtom ? 'var(--danger)' : '';
+
+  document.getElementById('res-cg').textContent = cg.toFixed(0);
+  document.getElementById('res-wl').textContent = wl.toFixed(1);
+
+  // ── Main CG status ──
   const ok = cg >= p.cgMin && cg <= p.cgMax;
+  const col = cgColor(cg, p);
   const dot = document.getElementById('status-dot');
   const statusEl = document.getElementById('cg-status');
   const cgEl = document.getElementById('res-cg');
 
-  if (ok) {
-    dot.style.background = 'var(--ok)';
+  dot.style.background = overMtom ? 'var(--danger)' : col;
+  cgEl.style.color = col;
+
+  if (overMtom) {
+    statusEl.style.color = 'var(--danger)';
+    statusEl.textContent = 'ACHTUNG: Höchstmasse überschritten! (' + p.mtom + ' kg)';
+  } else if (!ok) {
+    const dir = cg < p.cgMin ? 'VOR dem vorderen Limit!' : 'HINTER dem hinteren Limit!';
+    statusEl.style.color = 'var(--danger)';
+    statusEl.textContent = 'ACHTUNG SP: ' + dir;
+  } else if (p.cgOptMin != null && p.cgOptMax != null) {
+    const inOpt = cg >= p.cgOptMin && cg <= p.cgOptMax;
+    statusEl.style.color = inOpt ? 'var(--ok)' : 'var(--warn)';
+    statusEl.textContent = inOpt ? 'Im optimalen Bereich ✓' : 'Im zulässigen Bereich (nicht optimal)';
+  } else {
     statusEl.style.color = 'var(--ok)';
     statusEl.textContent = 'Im zulässigen Bereich ✓';
-    cgEl.style.color = 'var(--ok)';
-  } else {
-    const dir = cg < p.cgMin ? 'VOR dem vorderen Limit!' : 'HINTER dem hinteren Limit!';
-    dot.style.background = 'var(--danger)';
-    statusEl.style.color = 'var(--danger)';
-    statusEl.textContent = 'ACHTUNG: ' + dir;
-    cgEl.style.color = 'var(--danger)';
   }
 
-  // CG bar
+  // ── Dump row ──
+  const hasDumpable = (p.moments||[]).some(m => m.inConfig2 === false && getMomentVal(p.id, m) !== 0);
+  const dumpRow = document.getElementById('dump-row');
+  dumpRow.style.display = hasDumpable ? '' : 'none';
+
+  if (hasDumpable) {
+    const d = calcMassAndCg(p, true);
+    const dumpOk = d.cg >= p.cgMin && d.cg <= p.cgMax;
+    const dumpCol = cgColor(d.cg, p);
+    document.getElementById('dump-mass').textContent = d.mass.toFixed(1);
+    document.getElementById('dump-cg').textContent   = d.cg.toFixed(0);
+    document.getElementById('dump-wl').textContent   = d.wl.toFixed(1);
+    document.getElementById('dump-cg').style.color   = dumpCol;
+    document.getElementById('dump-dot').style.background = dumpCol;
+  }
+
+  // ── CG bar ──
   const margin = (p.cgMax - p.cgMin) * 0.4;
   const dMin = p.cgMin - margin, dMax = p.cgMax + margin, range = dMax - dMin;
+
   document.getElementById('cg-green').style.left  = ((p.cgMin-dMin)/range*100).toFixed(1)+'%';
   document.getElementById('cg-green').style.width = ((p.cgMax-p.cgMin)/range*100).toFixed(1)+'%';
+
+  // Optimal zone
+  const optEl = document.getElementById('cg-opt');
+  if (p.cgOptMin != null && p.cgOptMax != null) {
+    optEl.style.display = '';
+    optEl.style.left  = ((p.cgOptMin-dMin)/range*100).toFixed(1)+'%';
+    optEl.style.width = ((p.cgOptMax-p.cgOptMin)/range*100).toFixed(1)+'%';
+  } else {
+    optEl.style.display = 'none';
+  }
+
+  // Main needle
   const nLeft = Math.max(0, Math.min(100, (cg-dMin)/range*100));
   const needle = document.getElementById('cg-needle');
   needle.style.left = nLeft.toFixed(1)+'%';
-  needle.style.background = ok ? 'var(--ok)' : 'var(--danger)';
-  needle.style.boxShadow = `0 0 8px ${ok ? 'var(--ok)' : 'var(--danger)'}`;
+  needle.style.background = col;
+  needle.style.boxShadow = `0 0 8px ${col}`;
+
+  // Dump needle
+  const dumpNeedle = document.getElementById('cg-needle-dump');
+  if (hasDumpable) {
+    const d2 = calcMassAndCg(p, true);
+    const dnLeft = Math.max(0, Math.min(100, (d2.cg-dMin)/range*100));
+    dumpNeedle.style.display = '';
+    dumpNeedle.style.left = dnLeft.toFixed(1)+'%';
+  } else {
+    dumpNeedle.style.display = 'none';
+  }
+
   document.getElementById('cg-labels').innerHTML =
-    `<span>${Math.round(dMin)}</span><span>${p.cgMin} ◀</span><span>▶ ${p.cgMax}</span><span>${Math.round(dMax)}</span>`;
+    `<span>${Math.round(dMin)}</span><span>${p.cgMin}${p.cgOptMin!=null?' ('+p.cgOptMin+')':''} ◀</span><span>▶ ${p.cgMax}${p.cgOptMax!=null?' ('+p.cgOptMax+')':''}</span><span>${Math.round(dMax)}</span>`;
 }
 
 // ════ PROFILE EDITOR ════
@@ -892,7 +1005,7 @@ function goNewProfile() {
     emptyMass: 0, emptyCg: 0, wingArea: 10, mtom: 600,
     cgMin: 200, cgMax: 450,
     moments: [
-      { id: genId(), name: 'Pilot', arm: 0, min: 55, max: 110, step: 1, defaultVal: 80, showSlider: true }
+      { id: genId(), name: 'Pilot', arm: 0, min: 55, max: 110, step: 1, defaultVal: 80, showSlider: true, inConfig2: true }
     ]
   };
   profiles.push(p);
@@ -932,6 +1045,10 @@ function saveProfile() {
   p.mtom = +document.getElementById('ed-mtom').value || 600;
   p.cgMin = +document.getElementById('ed-cg-min').value || 0;
   p.cgMax = +document.getElementById('ed-cg-max').value || 500;
+  const optMin = document.getElementById('ed-cg-opt-min').value;
+  const optMax = document.getElementById('ed-cg-opt-max').value;
+  p.cgOptMin = optMin !== '' ? +optMin : null;
+  p.cgOptMax = optMax !== '' ? +optMax : null;
   saveStorage();
   toast('Profil gespeichert');
   goBackFromEditor();
@@ -982,13 +1099,23 @@ function renderMomentList(p) {
     <div class="moment-item">
       <div class="moment-item-head">
         <span class="moment-item-name">${escHtml(m.name)}</span>
-        <div style="display:flex;gap:6px;align-items:center">
-          <label class="toggle" title="Schieberegler">
-            <input type="checkbox" ${m.showSlider?'checked':''} onchange="updateMoment('${m.id}','showSlider',this.checked)">
-            <div class="toggle-track"></div>
-            <div class="toggle-thumb"></div>
-          </label>
-          <span style="font-size:10px;color:var(--text-dim)">Slider</span>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+            <span style="font-size:9px;font-weight:600;letter-spacing:0.05em;color:var(--text-dim)">Konfig. 2</span>
+            <label class="toggle" title="In 2. Konfiguration enthalten">
+              <input type="checkbox" ${m.inConfig2!==false?'checked':''} onchange="updateMoment('${m.id}','inConfig2',this.checked)">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+            <span style="font-size:9px;font-weight:600;letter-spacing:0.05em;color:var(--text-dim)">Slider</span>
+            <label class="toggle" title="Schieberegler">
+              <input type="checkbox" ${m.showSlider?'checked':''} onchange="updateMoment('${m.id}','showSlider',this.checked)">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
           <button class="btn btn-danger btn-sm" onclick="removeMoment('${m.id}')">✕</button>
         </div>
       </div>
@@ -1025,7 +1152,7 @@ function addMoment() {
   const p = getProfile(editingProfileId);
   if (!p) return;
   if (!p.moments) p.moments = [];
-  p.moments.push({ id:genId(), name:'Neues Moment', arm:0, min:0, max:100, step:1, defaultVal:0, showSlider:true });
+  p.moments.push({ id:genId(), name:'Neues Moment', arm:0, min:0, max:100, step:1, defaultVal:0, showSlider:true, inConfig2:true });
   renderMomentList(p);
 }
 
