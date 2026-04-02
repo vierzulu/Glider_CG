@@ -1,8 +1,15 @@
 [
   {
-    "file": "Ventus3_Vorlage.json",
-    "name": "Ventus 3",
+    "file": "Ventus3TS_Vorlage.json",
+    "name": "Ventus 3TS",
     "reg": "",
-    "description": "Vorlage · Leermasse bitte selbst eintragen"
+    "description": "Vorlage · Leermasse und Leermassenschwerpunkt bitte selbst eintragen"
+  },
+  {
+    "file": "Ventus3TS_D-KIVZ.json",
+    "name": "Ventus 3TS",
+    "reg": "D-KIVZ",
+    "description": "ACHTUNG Pilotenhebelarm nicht Handbuch-Standard"
   }
+  
 ]

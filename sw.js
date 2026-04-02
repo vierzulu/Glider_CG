@@ -1,9 +1,9 @@
-const CACHE_NAME = 'cg-calc-v1';
+const CACHE_NAME = 'cg-calc-v2';
 const ASSETS = ['./'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
-  self.skipWaiting();
+  // Don't skipWaiting automatically — wait for user confirmation
 });
 
 self.addEventListener('activate', e => {
@@ -21,4 +21,9 @@ self.addEventListener('fetch', e => {
       return res;
     }))
   );
+});
+
+// Allow app to trigger activation of new SW
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });

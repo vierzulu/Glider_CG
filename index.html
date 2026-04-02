@@ -8,8 +8,20 @@
 <meta name="theme-color" content="#0a0e14">
 <title>SP-Rechner</title>
 <link rel="manifest" id="manifest-link">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDQ3LjYyNDk5OSA0Ny42MjUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjQ3LjYyNDk5OSIgaGVpZ2h0PSI0Ny42MjUiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCBzdHlsZT0iZm9udC1zaXplOjYuMzVweDtmb250LWZhbWlseTonSGVsdmV0aWNhIE5ldWUnLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmO2ZpbGw6IzAwMDk5NTsiIHg9IjE1LjE5Mjg0OSIgeT0iMTEuOTY4NDUzIj5HbGlkZXI8L3RleHQ+CiAgPHRleHQgc3R5bGU9ImZvbnQtc2l6ZToyNS40cHg7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTonSGVsdmV0aWNhIE5ldWUnLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmO2ZpbGw6IzAwMDk5NTsiIHg9IjQuNDcxMzM4MyIgeT0iMzQuNjIwNTY0Ij5DRzwvdGV4dD4KICA8cGF0aCBzdHlsZT0iZmlsbDojMDAwOTk1O3N0cm9rZTojMDAwOTk1O3N0cm9rZS13aWR0aDowLjk0MTY1MjsiIGQ9Ik0gNy4zNDQ1NjQyLDQwLjE2MjY4OCBIIDQxLjEwMzY0NCIvPgogIDxwYXRoIHN0eWxlPSJmaWxsOiMwMDA5OTU7c3Ryb2tlOiMwMDk1MTM7c3Ryb2tlLXdpZHRoOjAuOTQxNjUyOyIgZD0ibSAzMC41MzI0MTgsMzcuOTA5Mzc4IHYgNC43MTMwNTkiLz4KPC9zdmc+">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800&display=swap');
+#splash {
+  position:fixed; inset:0; z-index:9999;
+  background:#ffffff;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  transition: opacity 0.4s ease;
+}
+#splash img { width:160px; height:160px; }
+#splash.hidden { opacity:0; pointer-events:none; }
+</style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap');
 
 :root {
   --bg: #0a0e14;
@@ -24,7 +36,7 @@
   --warn: #ffaa00;
   --danger: #ff4455;
   --mono: 'Share Tech Mono', monospace;
-  --sans: 'Exo 2', sans-serif;
+  --sans: 'Inter', sans-serif;
   --safe-top: env(safe-area-inset-top);
   --safe-bot: env(safe-area-inset-bottom);
 }
@@ -189,7 +201,7 @@ html, body {
 .tile-edit:active { background: var(--border); color: var(--text); }
 
 .tile-name {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
   line-height: 1.25;
@@ -198,13 +210,13 @@ html, body {
 
 .tile-reg {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--accent);
   margin-bottom: 6px;
 }
 
 .tile-meta {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-dim);
   line-height: 1.55;
 }
@@ -484,6 +496,8 @@ input[type=color] {
 </style>
 </head>
 <body>
+
+<div id="splash"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDQ3LjYyNDk5OSA0Ny42MjUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjQ3LjYyNDk5OSIgaGVpZ2h0PSI0Ny42MjUiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCBzdHlsZT0iZm9udC1zaXplOjYuMzVweDtmb250LWZhbWlseTonSGVsdmV0aWNhIE5ldWUnLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmO2ZpbGw6IzAwMDk5NTsiIHg9IjE1LjE5Mjg0OSIgeT0iMTEuOTY4NDUzIj5HbGlkZXI8L3RleHQ+CiAgPHRleHQgc3R5bGU9ImZvbnQtc2l6ZToyNS40cHg7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTonSGVsdmV0aWNhIE5ldWUnLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmO2ZpbGw6IzAwMDk5NTsiIHg9IjQuNDcxMzM4MyIgeT0iMzQuNjIwNTY0Ij5DRzwvdGV4dD4KICA8cGF0aCBzdHlsZT0iZmlsbDojMDAwOTk1O3N0cm9rZTojMDAwOTk1O3N0cm9rZS13aWR0aDowLjk0MTY1MjsiIGQ9Ik0gNy4zNDQ1NjQyLDQwLjE2MjY4OCBIIDQxLjEwMzY0NCIvPgogIDxwYXRoIHN0eWxlPSJmaWxsOiMwMDA5OTU7c3Ryb2tlOiMwMDk1MTM7c3Ryb2tlLXdpZHRoOjAuOTQxNjUyOyIgZD0ibSAzMC41MzI0MTgsMzcuOTA5Mzc4IHYgNC43MTMwNTkiLz4KPC9zdmc+" alt="CG Glider"></div>
 
 <!-- ════ SCREEN: HOME ════ -->
 <div class="screen active" id="screen-home">
@@ -1365,13 +1379,52 @@ function downloadOnlineProfile(file, name) {
     });
 }
 
+// ════ UPDATE ════
+function showUpdateToast() {
+  const el = document.getElementById('toast');
+  el.innerHTML = 'Update verfügbar &nbsp;<button onclick="applyUpdate()" style="background:var(--accent);color:#000;border:none;border-radius:5px;padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">Jetzt laden</button>';
+  el.classList.add('show');
+}
+
+function applyUpdate() {
+  navigator.serviceWorker.getRegistration().then(reg => {
+    if (reg && reg.waiting) {
+      reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+    }
+  });
+}
+
 // ════ INIT ════
 function init() {
   loadStorage();
   loadDesign();
   buildManifest();
   renderHome();
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  // Hide splash after short delay
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.classList.add('hidden');
+    setTimeout(() => splash.remove(), 450);
+  }, 1200);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateToast();
+          }
+        });
+      });
+    }).catch(()=>{});
+
+    // Page reload after SW takes control
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) { refreshing = true; window.location.reload(); }
+    });
+  }
 }
 
 init();

@@ -1,0 +1,94 @@
+{
+  "name": "Ventus 3TS",
+  "reg": "",
+  "emptyMass": 0,
+  "emptyCg": 0,
+  "wingArea": 10.836,
+  "mtom": 600,
+  "cgMin": 290,
+  "cgMax": 430,
+  "cgOptMin": null,
+  "cgOptMax": null,
+  "moments": [
+    {
+      "name": "Pilot",
+      "arm": -500,
+      "min": 55,
+      "max": 110,
+      "step": 1,
+      "defaultVal": 80,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "name": "Wasser Innen",
+      "arm": 172,
+      "min": 0,
+      "max": 45,
+      "step": 1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": false
+    },
+    {
+      "name": "Wasser Mitte",
+      "arm": 194,
+      "min": 0,
+      "max": 106,
+      "step": 1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "name": "Wasser Außen",
+      "arm": 214,
+      "min": 0,
+      "max": 25,
+      "step": 1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "name": "Hecktank",
+      "arm": 4194,
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "name": "Sprit Rumpftank",
+      "arm": 273.37,
+      "min": 0,
+      "max": 7.82,
+      "step": 0.1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "name": "Bleiplatte auf SLW",
+      "arm": 4194,
+      "min": 0,
+      "max": 20,
+      "step": 0.1,
+      "defaultVal": 0,
+      "showSlider": false,
+      "inConfig2": true
+    },
+    {
+      "name": "Trimmgewicht vorne",
+      "arm": -1800,
+      "min": 0,
+      "max": 10,
+      "step": 0.1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": true
+    }
+  ]
+}
