@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0e14">
 <title>SP-Rechner</title>
-<link rel="manifest" id="manifest-link">
-<link rel="apple-touch-icon" href="./logo.png">>
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./Logo.png">
 <style>
 #splash {
   position:fixed; inset:0; z-index:9999;
@@ -497,7 +497,7 @@ input[type=color] {
 </head>
 <body>
 
-<div id="splash"><img src="./logo.png" alt="CG Glider"></div>
+<div id="splash"><img src="./Logo.png" alt="CG Glider"></div>
 
 <!-- ════ SCREEN: HOME ════ -->
 <div class="screen active" id="screen-home">
@@ -1297,14 +1297,7 @@ function toast(msg) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
-function buildManifest() {
-  const title = localStorage.getItem('cgcalc_title') || 'SP-Rechner';
-  const blob = new Blob([JSON.stringify({
-    name:title, short_name:title, start_url:'./', display:'standalone',
-    background_color:'#0a0e14', theme_color:'#0a0e14', icons:[]
-  })], {type:'application/json'});
-  document.getElementById('manifest-link').href = URL.createObjectURL(blob);
-}
+// manifest.json is a static file in the repo — no dynamic manifest needed
 
 // ════ NEW PROFILE SHEET ════
 function openNewProfileSheet() {
@@ -1403,7 +1396,6 @@ function applyUpdate() {
 function init() {
   loadStorage();
   loadDesign();
-  buildManifest();
   renderHome();
   // Hide splash after short delay
   setTimeout(() => {
