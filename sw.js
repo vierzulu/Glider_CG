@@ -1,10 +1,9 @@
 const CACHE_NAME = 'cg-calc-v3';
-const VERSION = '2024-01-15'; // ← Datum anpassen
 const ASSETS = ['./'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
-  // Don't skipWaiting automatically — wait for user confirmation
+  // Don't skipWaiting — wait for user to confirm update
 });
 
 self.addEventListener('activate', e => {
@@ -15,16 +14,19 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // Never cache sw.js itself
+  if (e.request.url.includes('sw.js')) return;
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request).then(res => {
-      const clone = res.clone();
-      caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+      if (res.ok) {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+      }
       return res;
     }))
   );
 });
 
-// Allow app to trigger activation of new SW
 self.addEventListener('message', e => {
   if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });

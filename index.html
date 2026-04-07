@@ -1674,7 +1674,11 @@ function init() {
   applyTranslations();
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then(reg => {
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(reg => {
+      // Check for waiting worker on load (in case update came in last session)
+      if (reg.waiting) {
+        showUpdateToast();
+      }
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
         newWorker.addEventListener('statechange', () => {
@@ -1683,9 +1687,10 @@ function init() {
           }
         });
       });
+      // Periodically check for updates
+      setInterval(() => reg.update(), 60 * 60 * 1000); // every hour
     }).catch(()=>{});
 
-    // Page reload after SW takes control
     let refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (!refreshing) { refreshing = true; setTimeout(() => window.location.reload(), 300); }
