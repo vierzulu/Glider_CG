@@ -1,4 +1,5 @@
 const CACHE_NAME = 'cg-calc-v3';
+const VERSION = '2024-01-15'; // ← Datum anpassen
 const ASSETS = ['./'];
 
 self.addEventListener('install', e => {
