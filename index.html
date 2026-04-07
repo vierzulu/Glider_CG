@@ -225,7 +225,7 @@ html, body {
 /* ACTION TILES */
 .action-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 10px;
   margin-bottom: 24px;
 }
@@ -523,6 +523,14 @@ input[type=color] {
         <div class="action-icon">🎨</div>
         <div class="action-label"><span data-i18n="design"></span></div>
       </div>
+      <div class="action-tile" onclick="openLangSheet()">
+        <div class="action-icon" id="lang-flag">🇩🇪</div>
+        <div class="action-label"><span data-i18n="language"></span></div>
+      </div>
+      <div class="action-tile" onclick="forceUpdate()">
+        <div class="action-icon">↺</div>
+        <div class="action-label"><span data-i18n="forceUpdate"></span></div>
+      </div>
     </div>
 
   </div>
@@ -666,24 +674,35 @@ input[type=color] {
       <input type="text" id="design-title" placeholder="SP-Rechner" maxlength="16">
     </div>
 
-    <div class="card">
-      <div class="card-title" id="lbl-language">Sprache / Language</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
-        <button id="lang-btn-de" class="theme-btn active" onclick="selectLang('de')">
-          <div style="font-size:24px;margin-bottom:4px">🇩🇪</div>
-          <span>Deutsch</span>
-        </button>
-        <button id="lang-btn-en" class="theme-btn" onclick="selectLang('en')">
-          <div style="font-size:24px;margin-bottom:4px">🇬🇧</div>
-          <span>English</span>
-        </button>
-      </div>
-    </div>
-
     <button class="btn btn-primary btn-full" id="btn-save-design" onclick="saveDesign()"><span data-i18n="saveApply"></span></button>
+
+
   </div>
 </div>
 
+
+<!-- LANGUAGE SHEET -->
+<div id="lang-sheet" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.6)" onclick="closeLangSheet()">
+  <div onclick="event.stopPropagation()" style="
+    position:absolute;bottom:0;left:0;right:0;
+    background:var(--bg2);border-top:1px solid var(--border);
+    border-radius:20px 20px 0 0;
+    padding:20px 20px calc(var(--safe-bot) + 24px);
+  ">
+    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px">Sprache / Language</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="sheet-option" id="lang-opt-de" onclick="setLang('de')">
+        <div class="sheet-option-icon">🇩🇪</div>
+        <div><div class="sheet-option-title">Deutsch</div></div>
+      </button>
+      <button class="sheet-option" id="lang-opt-en" onclick="setLang('en')">
+        <div class="sheet-option-icon">🇬🇧</div>
+        <div><div class="sheet-option-title">English</div></div>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- NEW PROFILE SHEET -->
 <div id="new-profile-sheet" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,0.6)" onclick="closeNewProfileSheet()">
@@ -1241,8 +1260,9 @@ function renderDesignScreen() {
   ).join('');
   document.getElementById('custom-color').value = ca;
   document.getElementById('design-title').value = localStorage.getItem('cgcalc_title') || '';
-  document.getElementById('lang-btn-de').classList.toggle('active', currentLang === 'de');
-  document.getElementById('lang-btn-en').classList.toggle('active', currentLang === 'en');
+  // update lang flag tile
+  const flag = document.getElementById('lang-flag');
+  if (flag) flag.textContent = currentLang === 'de' ? '🇩🇪' : '🇬🇧';
 }
 
 function previewAccent(color) {
@@ -1404,16 +1424,40 @@ function downloadOnlineProfile(file, name) {
 }
 
 // ════ UPDATE ════
+function forceUpdate() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg) {
+        // Tell waiting SW to take over
+        if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        // Force SW update check
+        reg.update().then(() => {
+          if (reg.waiting) {
+            reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+          } else {
+            // No SW update — clear cache and hard reload
+            caches.keys().then(keys =>
+              Promise.all(keys.map(k => caches.delete(k)))
+            ).then(() => window.location.reload(true));
+          }
+        });
+      } else {
+        window.location.reload(true);
+      }
+    });
+  } else {
+    window.location.reload(true);
+  }
+}
+
 const APP_VERSION = 3; // ← increment this with every release
 
 function checkVersionUpdate() {
-  // Fetch the live index.html and extract its version number
-  // Works on iOS where SW update events are unreliable
-  fetch('./index.html?v=' + Date.now(), { cache: 'no-store' })
-    .then(r => r.text())
-    .then(html => {
-      const m = html.match(/name="app-version" content="(\d+)"/);
-      if (m && parseInt(m[1]) > APP_VERSION) {
+  // Fetch dedicated version file — SW explicitly never caches this
+  fetch('./version.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(r => r.json())
+    .then(data => {
+      if (data.version && parseInt(data.version) > APP_VERSION) {
         showUpdateToast();
       }
     })
@@ -1511,6 +1555,8 @@ const LANG = {
     appName: 'App-Name',
     appNameDesc: 'Wird als Titel und PWA-Name verwendet',
     saveApply: 'Speichern & Anwenden',
+    forceUpdate: 'Aktualisieren',
+    language: 'Sprache',
     withinLimits: 'Im zulässigen Bereich ✓',
     withinOptimal: 'Im optimalen Bereich ✓',
     withinLimitsNotOpt: 'Im zulässigen Bereich (nicht optimal)',
@@ -1605,6 +1651,8 @@ const LANG = {
     appName: 'App name',
     appNameDesc: 'Used as title and PWA name',
     saveApply: 'Save & Apply',
+    forceUpdate: 'Update',
+    language: 'Language',
     withinLimits: 'Within limits ✓',
     withinOptimal: 'Within optimal range ✓',
     withinLimitsNotOpt: 'Within limits (not optimal)',
@@ -1649,11 +1697,26 @@ function selectLang(lang) {
   currentLang = lang;
   document.documentElement.lang = lang;
   applyTranslations();
-  // update lang buttons if design screen is open
-  const deDe = document.getElementById('lang-btn-de');
-  const enEn = document.getElementById('lang-btn-en');
-  if (deDe) deDe.classList.toggle('active', lang === 'de');
-  if (enEn) enEn.classList.toggle('active', lang === 'en');
+  // Update flag on design tile
+  const flag = document.getElementById('lang-flag');
+  if (flag) flag.textContent = lang === 'de' ? '🇩🇪' : '🇬🇧';
+}
+
+function openLangSheet() {
+  const sheet = document.getElementById('lang-sheet');
+  sheet.style.display = '';
+  document.getElementById('lang-opt-de').style.borderColor = currentLang === 'de' ? 'var(--accent)' : 'var(--border)';
+  document.getElementById('lang-opt-en').style.borderColor = currentLang === 'en' ? 'var(--accent)' : 'var(--border)';
+}
+
+function closeLangSheet() {
+  document.getElementById('lang-sheet').style.display = 'none';
+}
+
+function setLang(lang) {
+  selectLang(lang);
+  localStorage.setItem('cgcalc_lang', lang);
+  closeLangSheet();
 }
 
 function applyTranslations() {

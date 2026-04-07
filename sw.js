@@ -1,9 +1,9 @@
-const CACHE_NAME = 'cg-calc-v3';
+const CACHE_NAME = 'cg-calc-v4';
 const ASSETS = ['./'];
+const NEVER_CACHE = ['version.json', 'sw.js'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
-  // Don't skipWaiting — wait for user to confirm update
 });
 
 self.addEventListener('activate', e => {
@@ -14,8 +14,12 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Never cache sw.js itself
-  if (e.request.url.includes('sw.js')) return;
+  const url = new URL(e.request.url);
+  // Never cache these — always fetch fresh from server
+  if (NEVER_CACHE.some(f => url.pathname.endsWith(f))) {
+    e.respondWith(fetch(e.request, { cache: 'no-store' }));
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request).then(res => {
       if (res.ok) {
