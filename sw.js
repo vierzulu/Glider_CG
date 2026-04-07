@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cg-calc-v2';
+const CACHE_NAME = 'cg-calc-v3';
 const ASSETS = ['./'];
 
 self.addEventListener('install', e => {

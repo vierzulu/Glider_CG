@@ -503,24 +503,24 @@ input[type=color] {
 <div class="screen active" id="screen-home">
   <div class="home-header">
     <div class="home-app-label" id="home-app-label">SP-Rechner</div>
-    <div class="home-headline">Schwerpunkt<span>.</span></div>
+    <div class="home-headline" id="home-headline"><span data-i18n="headline"></span><span>.</span></div>
   </div>
   <div class="home-scroll">
 
     <div id="profiles-section">
-      <div class="section-label">Meine Profile</div>
+      <div class="section-label"><span data-i18n="myProfiles"></span></div>
       <div class="tile-grid" id="profile-tiles"></div>
     </div>
 
-    <div class="section-label">Einstellungen</div>
+    <div class="section-label"><span data-i18n="settings"></span></div>
     <div class="action-row">
       <div class="action-tile" onclick="openNewProfileSheet()">
         <div class="action-icon">＋</div>
-        <div class="action-label">Neues Profil</div>
+        <div class="action-label"><span data-i18n="newProfile"></span></div>
       </div>
       <div class="action-tile" onclick="goScreen('design')">
         <div class="action-icon">🎨</div>
-        <div class="action-label">Design</div>
+        <div class="action-label"><span data-i18n="design"></span></div>
       </div>
     </div>
 
@@ -531,7 +531,7 @@ input[type=color] {
 <div class="screen" id="screen-calc">
   <div class="topbar">
     <button class="topbar-back" onclick="goScreen('home')">‹</button>
-    <div class="topbar-title" id="calc-title">Berechnung</div>
+    <div class="topbar-title" id="calc-title"><span data-i18n="calculation"></span></div>
     <div class="topbar-reg" id="calc-reg" style="display:none"></div>
     <button class="btn btn-secondary btn-sm" onclick="goEditCurrentProfile()" style="flex-shrink:0">⚙</button>
   </div>
@@ -539,18 +539,18 @@ input[type=color] {
   <div id="result-bar">
     <div class="result-bar-inner">
       <div class="result-cell">
-        <div class="result-label">Gesamtmasse</div>
+        <div class="result-label"><span data-i18n="totalMass"></span></div>
         <div class="result-value" id="res-mass">—</div>
         <div class="result-unit" id="res-mass-unit">kg</div>
       </div>
       <div class="result-cell">
         <div class="status-dot" id="status-dot"></div>
-        <div class="result-label">Schwerpunkt</div>
+        <div class="result-label"><span data-i18n="cg"></span></div>
         <div class="result-value" id="res-cg">—</div>
         <div class="result-unit">mm</div>
       </div>
       <div class="result-cell">
-        <div class="result-label">Flächenbelastung</div>
+        <div class="result-label"><span data-i18n="wingLoading"></span></div>
         <div class="result-value" id="res-wl">—</div>
         <div class="result-unit">kg/m²</div>
       </div>
@@ -559,18 +559,18 @@ input[type=color] {
     <div id="dump-row" style="display:none;border-top:1px solid var(--border)">
       <div class="result-bar-inner">
         <div class="result-cell" style="padding:6px 4px 5px">
-          <div class="result-label" style="font-size:8px">Konfiguration 2</div>
+          <div class="result-label" style="font-size:8px"><span data-i18n="config2"></span></div>
           <div class="result-value" id="dump-mass" style="font-size:15px">—</div>
           <div class="result-unit">kg</div>
         </div>
         <div class="result-cell" style="padding:6px 4px 5px">
           <div class="status-dot" id="dump-dot" style="top:5px;right:5px"></div>
-          <div class="result-label" style="font-size:8px">SP Konfig. 2</div>
+          <div class="result-label" style="font-size:8px"><span data-i18n="cgConfig2"></span></div>
           <div class="result-value" id="dump-cg" style="font-size:15px">—</div>
           <div class="result-unit">mm</div>
         </div>
         <div class="result-cell" style="padding:6px 4px 5px">
-          <div class="result-label" style="font-size:8px">Flächenbelastung</div>
+          <div class="result-label" style="font-size:8px"><span data-i18n="wingLoading"></span></div>
           <div class="result-value" id="dump-wl" style="font-size:15px">—</div>
           <div class="result-unit">kg/m²</div>
         </div>
@@ -595,48 +595,48 @@ input[type=color] {
 <div class="screen" id="screen-editor">
   <div class="topbar">
     <button class="topbar-back" onclick="goBackFromEditor()">‹</button>
-    <div class="topbar-title" id="editor-title">Profil bearbeiten</div>
+    <div class="topbar-title" id="editor-title"><span data-i18n="editProfile"></span></div>
   </div>
 
   <div style="flex:1;overflow-y:auto;padding:16px 16px calc(var(--safe-bot) + 24px)">
     <div class="card">
-      <div class="card-title">Grunddaten</div>
+      <div class="card-title"><span data-i18n="basicData"></span></div>
       <div id="ed-incomplete-hint" style="display:none;background:rgba(255,170,0,0.1);border:1px solid rgba(255,170,0,0.4);border-radius:7px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:var(--warn)">
-        ⚠ Vorlage: Bitte Leermasse, Leermassen-SP und Kennzeichen eintragen.
+        <span data-i18n="templateHint"></span>
       </div>
-      <label>Profilname</label>
+      <label><span data-i18n="profileName"></span></label>
       <input type="text" id="ed-name" placeholder="z.B. Ventus 3">
-      <label>Kennzeichen</label>
+      <label><span data-i18n="registration"></span></label>
       <input type="text" id="ed-reg" placeholder="z.B. D-1234">
       <div class="grid-2" style="margin-top:10px">
-        <div><label>Leermasse (kg)</label><input type="number" id="ed-empty-mass" min="0" step="0.1"></div>
-        <div><label>Leermassen-SP (mm)</label><input type="number" id="ed-empty-cg" step="0.1"></div>
+        <div><label><span data-i18n="emptyMassKg"></span></label><input type="number" id="ed-empty-mass" min="0" step="0.1"></div>
+        <div><label><span data-i18n="emptyCgMm"></span></label><input type="number" id="ed-empty-cg" step="0.1"></div>
       </div>
       <div class="grid-2">
-        <div><label>Flügelfläche (m²)</label><input type="number" id="ed-wing-area" min="1" step="0.001"></div>
-        <div><label>Max. Masse (kg)</label><input type="number" id="ed-mtom" min="0" step="1"></div>
+        <div><label><span data-i18n="wingArea"></span></label><input type="number" id="ed-wing-area" min="1" step="0.001"></div>
+        <div><label><span data-i18n="maxMass"></span></label><input type="number" id="ed-mtom" min="0" step="1"></div>
       </div>
       <div class="grid-2">
-        <div><label>SP-Limit vorne (mm)</label><input type="number" id="ed-cg-min" step="1"></div>
-        <div><label>SP-Limit hinten (mm)</label><input type="number" id="ed-cg-max" step="1"></div>
+        <div><label><span data-i18n="cgLimitFwd"></span></label><input type="number" id="ed-cg-min" step="1"></div>
+        <div><label><span data-i18n="cgLimitAft"></span></label><input type="number" id="ed-cg-max" step="1"></div>
       </div>
       <div class="grid-2">
-        <div><label>SP-Optimum vorne (mm)</label><input type="number" id="ed-cg-opt-min" step="1" placeholder="optional"></div>
-        <div><label>SP-Optimum hinten (mm)</label><input type="number" id="ed-cg-opt-max" step="1" placeholder="optional"></div>
+        <div><label><span data-i18n="cgOptFwd"></span></label><input type="number" id="ed-cg-opt-min" step="1" placeholder="optional"></div>
+        <div><label><span data-i18n="cgOptAft"></span></label><input type="number" id="ed-cg-opt-max" step="1" placeholder="optional"></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">Momente / Massen</div>
+      <div class="card-title"><span data-i18n="moments"></span></div>
       <div id="moment-list"></div>
-      <button class="btn btn-secondary btn-full" style="margin-top:8px" onclick="addMoment()">+ Moment hinzufügen</button>
+      <button class="btn btn-secondary btn-full" style="margin-top:8px" onclick="addMoment()"><span data-i18n="addMoment"></span></button>
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-primary" style="flex:1" onclick="saveProfile()">Speichern</button>
-      <button class="btn btn-secondary" onclick="shareProfile(editingProfileId)" title="Nativ teilen">Teilen</button>
-      <button class="btn btn-secondary" onclick="exportCurrentProfile()" title="Als Datei">↑ Datei</button>
-      <button class="btn btn-danger" onclick="deleteProfile()">Löschen</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveProfile()"><span data-i18n="save"></span></button>
+      <button class="btn btn-secondary" onclick="shareProfile(editingProfileId)" title="Nativ teilen"><span data-i18n="share"></span></button>
+      <button class="btn btn-secondary" onclick="exportCurrentProfile()" title="Als Datei"><span data-i18n="exportFile"></span></button>
+      <button class="btn btn-danger" onclick="deleteProfile()"><span data-i18n="delete"></span></button>
     </div>
 
   </div>
@@ -646,26 +646,40 @@ input[type=color] {
 <div class="screen" id="screen-design">
   <div class="topbar">
     <button class="topbar-back" onclick="goScreen('home')">‹</button>
-    <div class="topbar-title">Design</div>
+    <div class="topbar-title" id="topbar-design-title">Design</div>
   </div>
 
   <div style="flex:1;overflow-y:auto;padding:16px 16px calc(var(--safe-bot) + 24px)">
     <div class="card">
-      <div class="card-title">Akzentfarbe</div>
+      <div class="card-title"><span data-i18n="accentColor"></span></div>
       <div class="color-presets" id="color-presets"></div>
       <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
         <input type="color" id="custom-color" value="#00c8ff" oninput="previewAccent(this.value)">
-        <span style="font-size:12px;color:var(--text-dim)">Benutzerdefiniert</span>
+        <span style="font-size:12px;color:var(--text-dim)"><span data-i18n="custom"></span></span>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">App-Name</div>
-      <label>Wird als Titel und PWA-Name verwendet</label>
+      <div class="card-title"><span data-i18n="appName"></span></div>
+      <label><span data-i18n="appNameDesc"></span></label>
       <input type="text" id="design-title" placeholder="SP-Rechner" maxlength="16">
     </div>
 
-    <button class="btn btn-primary btn-full" onclick="saveDesign()">Speichern & Anwenden</button>
+    <div class="card">
+      <div class="card-title" id="lbl-language">Sprache / Language</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+        <button id="lang-btn-de" class="theme-btn active" onclick="selectLang('de')">
+          <div style="font-size:24px;margin-bottom:4px">🇩🇪</div>
+          <span>Deutsch</span>
+        </button>
+        <button id="lang-btn-en" class="theme-btn" onclick="selectLang('en')">
+          <div style="font-size:24px;margin-bottom:4px">🇬🇧</div>
+          <span>English</span>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-full" id="btn-save-design" onclick="saveDesign()"><span data-i18n="saveApply"></span></button>
   </div>
 </div>
 
@@ -679,29 +693,29 @@ input[type=color] {
     padding:20px 20px calc(var(--safe-bot) + 24px);
   ">
     <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:4px">Profil hinzufügen</div>
-    <div style="font-size:12px;color:var(--text-dim);margin-bottom:20px">Wie möchtest du das Profil erstellen?</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px"><span data-i18n="addProfile"></span></div>
+    <div style="font-size:12px;color:var(--text-dim);margin-bottom:20px"><span data-i18n="addProfileHow"></span></div>
 
     <div style="display:flex;flex-direction:column;gap:10px">
       <button class="sheet-option" onclick="closeNewProfileSheet();goNewProfile()">
         <div class="sheet-option-icon">✎</div>
         <div>
-          <div class="sheet-option-title">Manuell erstellen</div>
-          <div class="sheet-option-sub">Neues leeres Profil anlegen</div>
+          <div class="sheet-option-title"><span data-i18n="createManually"></span></div>
+          <div class="sheet-option-sub"><span data-i18n="createManuallyDesc"></span></div>
         </div>
       </button>
       <button class="sheet-option" onclick="closeNewProfileSheet();openOnlineSheet()">
         <div class="sheet-option-icon">☁</div>
         <div>
-          <div class="sheet-option-title">Online laden</div>
-          <div class="sheet-option-sub">Fertiges Profil aus dem Repository herunterladen</div>
+          <div class="sheet-option-title"><span data-i18n="loadOnline"></span></div>
+          <div class="sheet-option-sub"><span data-i18n="loadOnlineDesc"></span></div>
         </div>
       </button>
       <button class="sheet-option" onclick="closeNewProfileSheet();importProfile()">
         <div class="sheet-option-icon">↓</div>
         <div>
-          <div class="sheet-option-title">JSON-Datei importieren</div>
-          <div class="sheet-option-sub">Gespeicherte Profildatei öffnen</div>
+          <div class="sheet-option-title"><span data-i18n="importJson"></span></div>
+          <div class="sheet-option-sub"><span data-i18n="importJsonDesc"></span></div>
         </div>
       </button>
     </div>
@@ -718,10 +732,10 @@ input[type=color] {
     max-height:75vh;display:flex;flex-direction:column;
   ">
     <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;flex-shrink:0"></div>
-    <div style="font-size:16px;font-weight:700;margin-bottom:4px;flex-shrink:0">Online-Profile</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:4px;flex-shrink:0"><span data-i18n="onlineProfiles"></span></div>
     <div id="online-sheet-status" style="font-size:12px;color:var(--text-dim);margin-bottom:14px;flex-shrink:0"></div>
     <div id="online-sheet-list" style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px"></div>
-    <button class="btn btn-secondary btn-full" style="margin-top:16px;flex-shrink:0" onclick="closeOnlineSheet()">Schließen</button>
+    <button class="btn btn-secondary btn-full" style="margin-top:16px;flex-shrink:0" onclick="closeOnlineSheet()"><span data-i18n="close"></span></button>
   </div>
 </div>
 
@@ -768,8 +782,10 @@ function goBackFromEditor() {
 
 // ════ HOME ════
 function renderHome() {
-  const title = localStorage.getItem('cgcalc_title') || 'SP-Rechner';
+  const title = localStorage.getItem('cgcalc_title') || t('appTitle');
   document.getElementById('home-app-label').textContent = title;
+  const hl = document.getElementById('home-headline');
+  if (hl) hl.innerHTML = t('headline') + '<span>.</span>';
 
   const section = document.getElementById('profiles-section');
   const container = document.getElementById('profile-tiles');
@@ -793,9 +809,9 @@ function renderHome() {
         <div class="tile-name">${escHtml(p.name)}</div>
         ${p.reg ? `<div class="tile-reg">${escHtml(p.reg)}</div>` : ''}
         <div class="tile-meta">
-          ${p.emptyMass} kg Leer<br>
+          ${p.emptyMass} ${t('emptyLeer')}<br>
           SP ${p.cgMin}–${p.cgMax} mm<br>
-          ${(p.moments||[]).length} Momente
+          ${(p.moments||[]).length} ${t('momentsCount')}
         </div>
       </div>
     </div>
@@ -821,14 +837,14 @@ function renderCalcScreen() {
   const container = document.getElementById('calc-content');
   let html = '';
 
-  html += `<div class="section-header">Basis</div>
+  html += `<div class="section-header">${t('base')}</div>
   <div class="card" style="padding:10px 14px;margin-bottom:14px">
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:13px;color:var(--text-dim)">Leermasse</span>
+      <span style="font-size:13px;color:var(--text-dim)">${t('emptyMass')}</span>
       <span style="font-family:var(--mono);font-size:15px">${p.emptyMass.toFixed(1)} kg</span>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-      <span style="font-size:13px;color:var(--text-dim)">Leermassen-SP</span>
+      <span style="font-size:13px;color:var(--text-dim)">${t('emptyCg')}</span>
       <span style="font-family:var(--mono);font-size:15px">${p.emptyCg.toFixed(0)} mm</span>
     </div>
   </div>`;
@@ -837,12 +853,12 @@ function renderCalcScreen() {
   const fixedMs  = (p.moments||[]).filter(m => !m.showSlider);
 
   if (sliderMs.length > 0) {
-    html += `<div class="section-header">Zuladung</div>`;
+    html += `<div class="section-header">${t('usefulLoad')}</div>`;
     sliderMs.forEach(m => { html += renderSliderRow(p.id, m); });
   }
 
   if (fixedMs.length > 0) {
-    html += `<div class="section-header">Feste Werte</div>`;
+    html += `<div class="section-header">${t('fixedValues')}</div>`;
     fixedMs.forEach(m => {
       const val = (+( m.defaultVal || 0)).toFixed(stepDec(m.step));
       html += `<div class="card" style="padding:10px 14px;margin-bottom:8px">
@@ -943,18 +959,18 @@ function calculate() {
 
   if (overMtom) {
     statusEl.style.color = 'var(--danger)';
-    statusEl.textContent = 'ACHTUNG: Höchstmasse überschritten! (' + p.mtom + ' kg)';
+    statusEl.textContent = t('warnMtom') + '(' + p.mtom + ' kg)';
   } else if (!ok) {
-    const dir = cg < p.cgMin ? 'VOR dem vorderen Limit!' : 'HINTER dem hinteren Limit!';
+    const dir = cg < p.cgMin ? t('warnCgFwd') : t('warnCgAft');
     statusEl.style.color = 'var(--danger)';
-    statusEl.textContent = 'ACHTUNG SP: ' + dir;
+    statusEl.textContent = t('warnCg' + (cg < p.cgMin ? 'Fwd' : 'Aft'));
   } else if (p.cgOptMin != null && p.cgOptMax != null) {
     const inOpt = cg >= p.cgOptMin && cg <= p.cgOptMax;
     statusEl.style.color = inOpt ? 'var(--ok)' : 'var(--warn)';
-    statusEl.textContent = inOpt ? 'Im optimalen Bereich ✓' : 'Im zulässigen Bereich (nicht optimal)';
+    statusEl.textContent = inOpt ? t('withinOptimal') : t('withinLimitsNotOpt');
   } else {
     statusEl.style.color = 'var(--ok)';
-    statusEl.textContent = 'Im zulässigen Bereich ✓';
+    statusEl.textContent = t('withinLimits');
   }
 
   // ── Dump row ──
@@ -1015,7 +1031,7 @@ function calculate() {
 // ════ PROFILE EDITOR ════
 function goNewProfile() {
   const p = {
-    id: genId(), name: 'Neues Profil', reg: '',
+    id: genId(), name: t('newProfileName'), reg: '',
     emptyMass: 0, emptyCg: 0, wingArea: 10, mtom: 600,
     cgMin: 200, cgMax: 450,
     moments: [
@@ -1039,7 +1055,9 @@ function goEditProfile(profileId, fromCalc) {
   document.getElementById('ed-reg').value = p.reg || '';
   document.getElementById('ed-empty-mass').value = p.emptyMass;
   document.getElementById('ed-empty-cg').value = p.emptyCg;
-  document.getElementById('ed-incomplete-hint').style.display = (!p.emptyMass || !p.emptyCg) ? '' : 'none';
+  const hint = document.getElementById('ed-incomplete-hint');
+  hint.textContent = t('templateHint');
+  hint.style.display = (!p.emptyMass || !p.emptyCg) ? '' : 'none';
   document.getElementById('ed-wing-area').value = p.wingArea;
   document.getElementById('ed-mtom').value = p.mtom;
   document.getElementById('ed-cg-min').value = p.cgMin;
@@ -1064,7 +1082,7 @@ function saveProfile() {
   p.cgOptMin = optMin !== '' ? +optMin : null;
   p.cgOptMax = optMax !== '' ? +optMax : null;
   saveStorage();
-  toast('Profil gespeichert');
+  toast(t('profileSaved'));
   goBackFromEditor();
 }
 
@@ -1085,8 +1103,8 @@ function deleteProfile() {
     <div style="font-size:14px;font-weight:600;color:var(--danger)">Profil wirklich löschen?</div>
     <div style="font-size:12px;color:var(--text-dim)">Diese Aktion kann nicht rückgängig gemacht werden.</div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-danger" style="flex:1" onclick="confirmDeleteProfile()">Ja, löschen</button>
-      <button class="btn btn-secondary" style="flex:1" onclick="document.getElementById('delete-confirm').remove()">Abbrechen</button>
+      <button class="btn btn-danger" style="flex:1" onclick="confirmDeleteProfile()">${t('confirmDeleteBtn')}</button>
+      <button class="btn btn-secondary" style="flex:1" onclick="document.getElementById('delete-confirm').remove()">${t('cancel')}</button>
     </div>
   `;
   document.body.appendChild(bar);
@@ -1098,7 +1116,7 @@ function confirmDeleteProfile() {
   profiles = profiles.filter(p => p.id !== editingProfileId);
   if (currentProfileId === editingProfileId) currentProfileId = null;
   saveStorage();
-  toast('Profil gelöscht');
+  toast(t('profileDeleted'));
   goScreen('home');
 }
 
@@ -1166,7 +1184,7 @@ function addMoment() {
   const p = getProfile(editingProfileId);
   if (!p) return;
   if (!p.moments) p.moments = [];
-  p.moments.push({ id:genId(), name:'Neues Moment', arm:0, min:0, max:100, step:1, defaultVal:0, showSlider:true, inConfig2:true });
+  p.moments.push({ id:genId(), name:t('newMoment'), arm:0, min:0, max:100, step:1, defaultVal:0, showSlider:true, inConfig2:true });
   renderMomentList(p);
 }
 
@@ -1200,14 +1218,14 @@ function handleImport(e) {
       const data = JSON.parse(ev.target.result);
       const items = Array.isArray(data) ? data : [data];
       for (const p of items) {
-        if (!p.name) throw new Error('Ungültiges Format');
+        if (!p.name) throw new Error(t('invalidFormat'));
         sanitizeProfile(p);
         profiles.push(p);
       }
       saveStorage();
       renderHome();
-      toast(items.length + ' Profil(e) importiert');
-    } catch(err) { toast('Fehler: ' + err.message); }
+      toast(items.length + ' ' + t('imported'));
+    } catch(err) { toast(t('error') + err.message); }
     e.target.value = '';
   };
   reader.readAsText(file);
@@ -1215,12 +1233,15 @@ function handleImport(e) {
 
 // ════ DESIGN ════
 function renderDesignScreen() {
+  applyTranslations();
   const ca = localStorage.getItem('cgcalc_accent') || '#00c8ff';
   document.getElementById('color-presets').innerHTML = COLOR_PRESETS.map(c =>
     `<div class="color-swatch ${c===ca?'active':''}" style="background:${c}" onclick="previewAccent('${c}')" data-color="${c}"></div>`
   ).join('');
   document.getElementById('custom-color').value = ca;
   document.getElementById('design-title').value = localStorage.getItem('cgcalc_title') || '';
+  document.getElementById('lang-btn-de').classList.toggle('active', currentLang === 'de');
+  document.getElementById('lang-btn-en').classList.toggle('active', currentLang === 'en');
 }
 
 function previewAccent(color) {
@@ -1236,20 +1257,24 @@ function applyAccent(color) {
 
 function saveDesign() {
   const color = document.getElementById('custom-color').value;
-  const title = document.getElementById('design-title').value.trim() || 'SP-Rechner';
+  const title = document.getElementById('design-title').value.trim() || t('appTitle');
   localStorage.setItem('cgcalc_accent', color);
   localStorage.setItem('cgcalc_title', title);
+  localStorage.setItem('cgcalc_lang', currentLang);
   applyAccent(color);
-  document.title = title;
-  toast('Design gespeichert');
+  applyTranslations();
+  document.title = title || t('appTitle');
+  toast(t('designSaved'));
   goScreen('home');
 }
 
 function loadDesign() {
   const c = localStorage.getItem('cgcalc_accent');
   if (c) applyAccent(c);
-  const t = localStorage.getItem('cgcalc_title');
-  if (t) document.title = t;
+  const title = localStorage.getItem('cgcalc_title');
+  if (title) document.title = title;
+  const lang = localStorage.getItem('cgcalc_lang') || 'de';
+  selectLang(lang);
 }
 
 // ════ HELPERS ════
@@ -1323,7 +1348,7 @@ function closeOnlineSheet() {
 function fetchOnlineProfiles() {
   const statusEl = document.getElementById('online-sheet-status');
   const listEl   = document.getElementById('online-sheet-list');
-  statusEl.textContent = 'Lade verfügbare Profile…';
+  statusEl.textContent = t('loadingProfiles');
   listEl.innerHTML = '';
 
   fetch(ONLINE_BASE + 'index.json?t=' + Date.now())
@@ -1331,10 +1356,10 @@ function fetchOnlineProfiles() {
     .then(index => {
       onlineSheetLoaded = true;
       if (!index.length) {
-        statusEl.textContent = 'Keine Profile im Repository vorhanden.';
+        statusEl.textContent = t('noOnlineProfiles');
         return;
       }
-      statusEl.textContent = index.length + ' Profil(e) verfügbar';
+      statusEl.textContent = index.length + ' ' + (currentLang === 'de' ? 'Profil(e) verfügbar' : 'profile(s) available');
       listEl.innerHTML = index.map(entry => `
         <button class="sheet-option" onclick="downloadOnlineProfile('${escAttr(entry.file)}','${escAttr(entry.name)}')">
           <div class="sheet-option-icon">☁</div>
@@ -1347,14 +1372,14 @@ function fetchOnlineProfiles() {
       `).join('');
     })
     .catch(() => {
-      statusEl.textContent = 'Nicht erreichbar — Internetverbindung erforderlich.';
+      statusEl.textContent = t('notReachable');
     });
 }
 
 function downloadOnlineProfile(file, name) {
   const statusEl = document.getElementById('online-sheet-status');
   const listEl   = document.getElementById('online-sheet-list');
-  statusEl.textContent = 'Lade ' + name + '…';
+  statusEl.textContent = t('loadingProfiles').replace('…','') + ' ' + name + '…';
   listEl.style.opacity = '0.4';
 
   fetch(ONLINE_BASE + file)
@@ -1362,25 +1387,25 @@ function downloadOnlineProfile(file, name) {
     .then(data => {
       const items = Array.isArray(data) ? data : [data];
       for (const p of items) {
-        if (!p.name) throw new Error('Ungültiges Format');
+        if (!p.name) throw new Error(t('invalidFormat'));
         sanitizeProfile(p);
         profiles.push(p);
       }
       saveStorage();
       closeOnlineSheet();
       renderHome();
-      toast(name + ' importiert ✓');
+      toast(name + ' ' + t('imported'));
     })
     .catch(err => {
       listEl.style.opacity = '';
-      statusEl.textContent = 'Fehler: ' + err.message;
+      statusEl.textContent = t('error') + err.message;
     });
 }
 
 // ════ UPDATE ════
 function showUpdateToast() {
   const el = document.getElementById('toast');
-  el.innerHTML = 'Update verfügbar &nbsp;<button onclick="applyUpdate()" style="background:var(--accent);color:#000;border:none;border-radius:5px;padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">Jetzt laden</button>';
+  el.innerHTML = t('updateAvailable') + ' &nbsp;<button onclick="applyUpdate()"' style="background:var(--accent);color:#000;border:none;border-radius:5px;padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">' + t('loadNow') + '</button>';
   el.classList.add('show');
 }
 
@@ -1390,6 +1415,228 @@ function applyUpdate() {
       reg.waiting.postMessage({ type: 'SKIP_WAITING' });
     }
   });
+}
+
+// ════ TRANSLATIONS ════
+const LANG = {
+  de: {
+    appTitle: 'SP-Rechner',
+    headline: 'Schwerpunkt',
+    myProfiles: 'Meine Profile',
+    settings: 'Einstellungen',
+    newProfile: 'Neues Profil',
+    design: 'Design',
+    addProfile: 'Profil hinzufügen',
+    addProfileHow: '${t('addProfileHow')}',
+    createManually: 'Manuell erstellen',
+    createManuallyDesc: 'Neues leeres Profil anlegen',
+    loadOnline: 'Online laden',
+    loadOnlineDesc: 'Fertiges Profil aus dem Repository herunterladen',
+    importJson: 'JSON-Datei importieren',
+    importJsonDesc: 'Gespeicherte Profildatei öffnen',
+    onlineProfiles: 'Online-Profile',
+    close: 'Schließen',
+    calculation: 'Berechnung',
+    totalMass: 'Gesamtmasse',
+    cg: 'Schwerpunkt',
+    wingLoading: 'Flächenbelastung',
+    base: t('base'),
+    emptyMass: t('emptyMass'),
+    emptyCg: t('emptyCg'),
+    usefulLoad: t('usefulLoad'),
+    fixedValues: t('fixedValues'),
+    config2: t('config2'),
+    cgConfig2: t('cgConfig2'),
+    konfig2: t('konfig2'),
+    slider: t('slider'),
+    editProfile: t('editProfile'),
+    basicData: 'Grunddaten',
+    profileName: 'Profilname',
+    registration: 'Kennzeichen',
+    emptyMassKg: 'Leermasse (kg)',
+    emptyCgMm: 'Leermassen-SP (mm)',
+    wingArea: 'Flügelfläche (m²)',
+    maxMass: 'Max. Masse (kg)',
+    cgLimitFwd: 'SP-Limit vorne (mm)',
+    cgLimitAft: 'SP-Limit hinten (mm)',
+    cgOptFwd: 'SP-Optimum vorne (mm)',
+    cgOptAft: 'SP-Optimum hinten (mm)',
+    moments: 'Momente / Massen',
+    addMoment: '+ Moment hinzufügen',
+    momentName: t('momentName'),
+    arm: t('arm'),
+    defaultVal: t('defaultVal'),
+    min: t('min'),
+    max: t('max'),
+    step: t('step'),
+    save: 'Speichern',
+    share: 'Teilen',
+    exportFile: '↑ Datei',
+    delete: 'Löschen',
+    accentColor: 'Akzentfarbe',
+    custom: 'Benutzerdefiniert',
+    appName: 'App-Name',
+    appNameDesc: '${t('appNameDesc')}',
+    saveApply: 'Speichern & Anwenden',
+    withinLimits: t('withinLimits'),
+    withinOptimal: t('withinOptimal'),
+    withinLimitsNotOpt: t('withinLimitsNotOpt'),
+    warnCgFwd: 'ACHTUNG SP: VOR dem vorderen Limit!',
+    warnCgAft: 'ACHTUNG SP: HINTER dem hinteren Limit!',
+    warnMtom: t('warnMtom') + '(',
+    noProfile: t('noProfile'),
+    profileSaved: 'Profil gespeichert',
+    profileDeleted: 'Profil gelöscht',
+    designSaved: 'Design gespeichert',
+    confirmDelete: t('confirmDelete'),
+    confirmDeleteDesc: t('confirmDeleteDesc'),
+    confirmDeleteBtn: 'Ja, löschen',
+    cancel: 'Abbrechen',
+    updateAvailable: t('updateAvailable'),
+    loadNow: 'Jetzt laden',
+    loadingProfiles: t('loadingProfiles'),
+    notReachable: t('notReachable'),
+    noOnlineProfiles: t('noOnlineProfiles'),
+    error: 'Fehler: ',
+    invalidFormat: 'Ungültiges Format',
+    shareUnavailable: t('shareUnavailable'),
+    shareFailed: t('shareFailed'),
+    imported: 'importiert ✓',
+    templateHint: t('templateHint'),
+    newMoment: 'Neues Moment',
+    newProfileName: 'Neues Profil',
+    noMoments: t('noMoments'),
+    deleteAfterDump: t('deleteAfterDump'),
+    afterDumpCg: t('afterDumpCg'),
+    profilesTitle: 'Profile',
+    incomplete: 'importiert',
+    momentsCount: 'Momente',
+    emptyLeer: 'kg Leer',
+  },
+  en: {
+    appTitle: 'CG Calculator',
+    headline: 'Center of Gravity',
+    myProfiles: 'My Profiles',
+    settings: 'Settings',
+    newProfile: 'New Profile',
+    design: 'Design',
+    addProfile: 'Add Profile',
+    addProfileHow: 'How would you like to add a profile?',
+    createManually: 'Create manually',
+    createManuallyDesc: 'Create a new empty profile',
+    loadOnline: 'Load online',
+    loadOnlineDesc: 'Download a ready-made profile from the repository',
+    importJson: 'Import JSON file',
+    importJsonDesc: 'Open a saved profile file',
+    onlineProfiles: 'Online Profiles',
+    close: 'Close',
+    calculation: 'Calculation',
+    totalMass: 'Total Mass',
+    cg: 'Center of Gravity',
+    wingLoading: 'Wing Loading',
+    base: 'Base',
+    emptyMass: 'Empty Mass',
+    emptyCg: 'Empty CG',
+    usefulLoad: 'Useful Load',
+    fixedValues: 'Fixed Values',
+    config2: 'Configuration 2',
+    cgConfig2: 'CG Config. 2',
+    konfig2: 'Config. 2',
+    slider: t('slider'),
+    editProfile: 'Edit Profile',
+    basicData: 'Basic Data',
+    profileName: 'Profile Name',
+    registration: 'Registration',
+    emptyMassKg: 'Empty mass (kg)',
+    emptyCgMm: 'Empty CG (mm)',
+    wingArea: 'Wing area (m²)',
+    maxMass: 'Max. mass (kg)',
+    cgLimitFwd: 'CG limit fwd (mm)',
+    cgLimitAft: 'CG limit aft (mm)',
+    cgOptFwd: 'CG optimum fwd (mm)',
+    cgOptAft: 'CG optimum aft (mm)',
+    moments: 'Moments / Masses',
+    addMoment: '+ Add moment',
+    momentName: 'Name',
+    arm: 'Moment arm (mm)',
+    defaultVal: 'Default value (kg)',
+    min: t('min'),
+    max: t('max'),
+    step: 'Increment (kg)',
+    save: 'Save',
+    share: 'Share',
+    exportFile: '↑ File',
+    delete: 'Delete',
+    accentColor: 'Accent color',
+    custom: 'Custom',
+    appName: 'App name',
+    appNameDesc: 'Used as title and PWA name',
+    saveApply: 'Save & Apply',
+    withinLimits: 'Within limits ✓',
+    withinOptimal: 'Within optimal range ✓',
+    withinLimitsNotOpt: 'Within limits (not optimal)',
+    warnCgFwd: 'WARNING CG: Beyond forward limit!',
+    warnCgAft: 'WARNING CG: Beyond aft limit!',
+    warnMtom: 'WARNING: Max mass exceeded! (',
+    noProfile: 'No profile loaded',
+    profileSaved: 'Profile saved',
+    profileDeleted: 'Profile deleted',
+    designSaved: 'Design saved',
+    confirmDelete: 'Really delete profile?',
+    confirmDeleteDesc: 'This action cannot be undone.',
+    confirmDeleteBtn: 'Yes, delete',
+    cancel: 'Cancel',
+    updateAvailable: 'Update available',
+    loadNow: 'Load now',
+    loadingProfiles: 'Loading available profiles…',
+    notReachable: 'Unreachable — internet connection required.',
+    noOnlineProfiles: 'No profiles found in repository.',
+    error: 'Error: ',
+    invalidFormat: 'Invalid format',
+    shareUnavailable: 'Sharing unavailable – file exported instead',
+    shareFailed: 'Sharing failed – file exported instead',
+    imported: 'imported ✓',
+    templateHint: '⚠ Template: Please enter empty mass, empty CG and registration.',
+    newMoment: 'New Moment',
+    newProfileName: 'New Profile',
+    noMoments: 'No moments defined.',
+    deleteAfterDump: '∅ After dump',
+    afterDumpCg: 'CG after dump',
+    profilesTitle: 'Profiles',
+    incomplete: 'imported',
+    momentsCount: 'moments',
+    emptyLeer: 'kg empty',
+  }
+};
+
+let currentLang = 'de';
+function t(key) { return (LANG[currentLang] || LANG.de)[key] || key; }
+
+function selectLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  applyTranslations();
+  // update lang buttons if design screen is open
+  const deDe = document.getElementById('lang-btn-de');
+  const enEn = document.getElementById('lang-btn-en');
+  if (deDe) deDe.classList.toggle('active', lang === 'de');
+  if (enEn) enEn.classList.toggle('active', lang === 'en');
+}
+
+function applyTranslations() {
+  // Render all data-i18n spans
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  // Update dynamic elements not covered by data-i18n
+  const hl = document.getElementById('home-headline');
+  if (hl) hl.innerHTML = t('headline') + '<span>.</span>';
+  const appLabel = document.getElementById('home-app-label');
+  if (appLabel) {
+    const saved = localStorage.getItem('cgcalc_title');
+    appLabel.textContent = saved || t('appTitle');
+  }
+  document.title = localStorage.getItem('cgcalc_title') || t('appTitle');
 }
 
 // ════ INIT ════
@@ -1403,6 +1650,8 @@ function init() {
     splash.classList.add('hidden');
     setTimeout(() => splash.remove(), 450);
   }, 1200);
+
+  applyTranslations();
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then(reg => {
@@ -1477,12 +1726,12 @@ async function shareProfile(profileId) {
     }
 
     exportProfileById(p.id);
-    toast('Teilen nicht verfügbar – Datei wurde exportiert');
+    toast(t('shareUnavailable'));
   } catch (err) {
     if (err && err.name === 'AbortError') return;
     console.error('Share failed:', err);
     exportProfileById(p.id);
-    toast('Teilen fehlgeschlagen – Datei wurde exportiert');
+    toast(t('shareFailed'));
   }
 }
 
