@@ -1,0 +1,104 @@
+{
+  "id": "mnvisqq7gp5u",
+  "name": "ASG 32",
+  "reg": "",
+  "emptyMass": 0,
+  "emptyCg": 0,
+  "wingArea": 10,
+  "mtom": 600,
+  "cgMin": 200,
+  "cgMax": 450,
+  "moments": [
+    {
+      "id": "mnvisqq7ky0t",
+      "name": "Pilot vorne",
+      "arm": -1430,
+      "min": 55,
+      "max": 110,
+      "step": 1,
+      "defaultVal": 80,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "id": "mnvium4m97ss",
+      "name": "Pilot hinten",
+      "arm": -450,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "defaultVal": 80,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "id": "mnviuy87ee29",
+      "name": "Batterien Sitzwanne",
+      "arm": -1930,
+      "min": 0,
+      "max": 4,
+      "step": 0.1,
+      "defaultVal": 3,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "id": "mnvixmknqpvp",
+      "name": "Heckbatterie",
+      "arm": 5617,
+      "min": 0,
+      "max": 10,
+      "step": 0.1,
+      "defaultVal": 5,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "id": "mnviyhng7ehg",
+      "name": "Wasser ",
+      "arm": 150,
+      "min": 0,
+      "max": 120,
+      "step": 1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "id": "mnvj3nim65gc",
+      "name": "Hecktank",
+      "arm": 5678,
+      "min": 0,
+      "max": 10,
+      "step": 0.1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "id": "mnvj0fpx08jb",
+      "name": "Sprit",
+      "arm": 290,
+      "min": 0,
+      "max": 12,
+      "step": 0.1,
+      "defaultVal": 10,
+      "showSlider": true,
+      "inConfig2": true
+    },
+    {
+      "id": "mnvj1k2gdvzs",
+      "name": "Gepäckfach",
+      "arm": 110,
+      "min": 0,
+      "max": 10,
+      "step": 0.1,
+      "defaultVal": 0,
+      "showSlider": true,
+      "inConfig2": true
+    },
+
+  ],
+  "cgOptMin": null,
+  "cgOptMax": null
+}
