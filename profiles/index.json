@@ -10,6 +10,12 @@
     "name": "Ventus 3TS",
     "reg": "D-KIVZ",
     "description": "ACHTUNG Pilotenhebelarm nicht Handbuch-Standard"
+  },
+  {
+    "file": "ASG_32_Vorlage.json",
+    "name": "ASG 32",
+    "reg": "",
+    "description": "Vorlage · Leermasse bitte selbst eintragen"
   }
   
 ]

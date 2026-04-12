@@ -96,9 +96,8 @@
       "defaultVal": 0,
       "showSlider": true,
       "inConfig2": true
-    },
-
+    }
   ],
-  "cgOptMin": null,
-  "cgOptMax": null
+  "cgOptMin": 230,
+  "cgOptMax": 280
 }
